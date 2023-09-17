@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"log"
+	"net"
 	"runtime"
 	"time"
 
@@ -39,6 +40,7 @@ type pieceWork struct {
 type pieceResult struct {
 	index int
 	buf   []byte
+	IP    net.IP
 }
 
 type pieceProgress struct {
@@ -164,7 +166,7 @@ func (t *Torrent) startDownloadWorker(peer peers.Peer, workQueue chan *pieceWork
 		}
 
 		c.SendHave(pw.index)
-		results <- &pieceResult{pw.index, buf}
+		results <- &pieceResult{pw.index, buf, peer.IP}
 	}
 }
 
@@ -195,6 +197,7 @@ func (t *Torrent) Download() ([]byte, error) {
 
 	// Start workers
 	for _, peer := range t.Peers {
+		fmt.Printf("startDownloadWorker Peer: %s\n", peer.IP)
 		go t.startDownloadWorker(peer, workQueue, results)
 	}
 
@@ -209,7 +212,8 @@ func (t *Torrent) Download() ([]byte, error) {
 
 		percent := float64(donePieces) / float64(len(t.PieceHashes)) * 100
 		numWorkers := runtime.NumGoroutine() - 1 // subtract 1 for main thread
-		log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
+
+		log.Printf("(%0.2f%%) Downloaded piece #%d from %d no of peers and IP: %s \n", percent, res.index, numWorkers, res.IP)
 	}
 	close(workQueue)
 

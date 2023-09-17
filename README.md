@@ -4,17 +4,18 @@
 
 Tiny BitTorrent client written in Go. Read the blog post: https://blog.jse.li/posts/torrent/
 
-## Install
+## Build and Install
 
 ```sh
-go get github.com/veggiedefender/torrent-client
+go build
 ```
 
 ## Usage
 Try downloading [Debian](https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/#indexlist)!
 
+
 ```sh
-torrent-client debian-10.2.0-amd64-netinst.iso.torrent debian.iso
+./torrent-client deb.torrent debian.iso
 ```
 
 [![asciicast](https://asciinema.org/a/xqRSB0Jec8RN91Zt89rbb9PcL.svg)](https://asciinema.org/a/xqRSB0Jec8RN91Zt89rbb9PcL)
